@@ -108,7 +108,13 @@ class MLPActorCritic(nn.Module):
         #    3. The log-probability of the action under the policy output distribution
         # Hint: This function is only called when interacting with the environment. You should use
         # `torch.no_grad` to ensure that it does not interfere with the gradient computation.
-        return 0, 0, 0
+        with torch.no_grad():
+            pi, logp_a = self.pi(state, act=torch.arange(0, 4))
+            action = torch.argmax(logp_a)
+
+            value = self.v(state)
+
+        return action, value, logp_a[action]
 
 
 class VPGBuffer:
