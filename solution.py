@@ -227,6 +227,12 @@ class Agent:
 
         # Hint: you need to compute a 'loss' such that its derivative with respect to the policy
         # parameters is the policy gradient. Then call loss.backwards() and pi_optimizer.step()
+        _, logp = self.ac.pi(obs, act=act)
+
+        loss = -(ret * logp).mean()
+
+        loss.backward()
+        self.pi_optimizer.step()
 
         return
 
