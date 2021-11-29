@@ -114,7 +114,7 @@ class MLPActorCritic(nn.Module):
 
             value = self.v(state)
 
-        return action, value, logp_a[action]
+        return action.item(), value.item(), logp_a[action].item()
 
 
 class VPGBuffer:
