@@ -345,7 +345,9 @@ class Agent:
         """
         # TODO3: Implement this function.
         # Currently, this just returns a random action.
-        return np.random.choice([0, 1, 2, 3])
+        pi, logp_a = self.ac.pi(obs, act=torch.arange(0, 4))
+        action = torch.argmax(logp_a).item()
+        return action
 
 
 def main():
