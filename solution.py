@@ -101,7 +101,7 @@ class MLPActorCritic(nn.Module):
         Take a state and return an action, value function, and log-likelihood
         of chosen action.
         """
-        # TODO1: Implement this function.
+        # TODO1 - done: Implement this function.
         # It is supposed to return three numbers:
         #    1. An action sampled from the policy given a state (0, 1, 2 or 3)
         #    2. The value function at the given state
@@ -171,7 +171,7 @@ class VPGBuffer:
         # deltas = rews[:-1] + ...
         # self.phi_buf[path_slice] =
 
-        # TODO4: currently the return is the total discounted reward for the whole episode.
+        # TODO4 - done: currently the return is the total discounted reward for the whole episode.
         # Replace this by computing the reward-to-go for each timepoint.
         # Hint: use the discount_cumsum function.
         self.ret_buf[path_slice] = discount_cumsum(rews, self.gamma)[0:-1]
@@ -214,7 +214,7 @@ class Agent:
         """
         Use the data from the buffer to update the policy. Returns nothing.
         """
-        # TODO2: Implement this function.
+        # TODO2 - done: Implement this function.
         # TODO8: Change the update rule to make use of the baseline instead of rewards-to-go.
 
         obs = data['obs']
@@ -343,7 +343,7 @@ class Agent:
         It is not used in your own training code. Instead the .step function in 
         MLPActorCritic is used since it also outputs relevant side-information. 
         """
-        # TODO3: Implement this function.
+        # TODO3 - done: Implement this function.
         # Currently, this just returns a random action.
         pi, logp_a = self.ac.pi(obs, act=torch.arange(0, 4))
         action = torch.argmax(logp_a).item()
