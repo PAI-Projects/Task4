@@ -382,7 +382,7 @@ def main():
             if i <= 10:
                 rec.capture_frame()
             # Taking an action in the environment
-            action = agent.get_action(state)
+            action = agent.get_action(torch.as_tensor(state, dtype=torch.float32))
             state, reward, terminal = env.transition(action)
             cumulative_return += reward
             if terminal:
