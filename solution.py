@@ -172,7 +172,7 @@ class VPGBuffer:
 
         vals_t_plus_1 = np.roll(vals, -1)[:-1]
 
-        deltas = rews[:-1] + vals[:-1] - self.gamma * vals_t_plus_1
+        deltas = - vals[:-1] + rews[:-1] + self.gamma * vals_t_plus_1
         self.phi_buf[path_slice] = discount_cumsum(deltas, self.gamma * self.lam)
 
         # TODO4 - done: currently the return is the total discounted reward for the whole episode.
