@@ -190,8 +190,8 @@ class VPGBuffer:
         assert self.ptr == self.max_size
         self.ptr, self.path_start_idx = 0, 0
 
-        # TODO7: Here it may help to normalize the values in self.phi_buf
-        self.phi_buf = self.phi_buf
+        # TODO7 - done: Here it may help to normalize the values in self.phi_buf to mean 0 standard deviation 1
+        self.phi_buf = (self.phi_buf - self.phi_buf.mean()) / self.phi_buf.std()
 
         data = dict(obs=self.obs_buf, act=self.act_buf, ret=self.ret_buf,
                     phi=self.phi_buf, logp=self.logp_buf)
