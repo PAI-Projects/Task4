@@ -359,7 +359,7 @@ class Agent:
         """
         # TODO3 - done: Implement this function.
         # Currently, this just returns a random action.
-        pi, logp_a = self.ac.pi(obs, act=torch.arange(0, 4))
+        pi, logp_a = self.ac.pi(torch.as_tensor(obs, dtype=torch.float32), act=torch.arange(0, 4))
         action = torch.argmax(logp_a).item()
         return action
 
@@ -396,7 +396,7 @@ def main():
             if i <= 10:
                 rec.capture_frame()
             # Taking an action in the environment
-            action = agent.get_action(torch.as_tensor(state, dtype=torch.float32))
+            action = agent.get_action(state)
             state, reward, terminal = env.transition(action)
             cumulative_return += reward
             if terminal:
