@@ -9,6 +9,7 @@ from gym.spaces import Box, Discrete
 import torch
 from torch.optim import Adam
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.distributions.categorical import Categorical
 
 
@@ -240,7 +241,7 @@ class Agent:
         """
         Use the data from the buffer to update the value function. Returns nothing.
         """
-        # TODO5: Implement this function
+        # TODO5 - done: Implement this function
 
         obs = data['obs']
         act = data['act']
@@ -251,8 +252,16 @@ class Agent:
         # With the learning rate given, we'd recommend 100. 
         # In each update, compute a loss for the value function, call loss.backwards() and 
         # then v_optimizer.step()
-        # Before doing any computation, always call.zero_grad on the relevant optimizer
-        self.v_optimizer.zero_grad()
+        for i in range(100):
+            # Before doing any computation, always call.zero_grad on the relevant optimizer
+            self.v_optimizer.zero_grad()
+
+            values = self.ac.v(obs)
+
+            loss = F.mse_loss(values, ret)
+
+            loss.backward()
+            self.v_optimizer.step()
 
         return
 
