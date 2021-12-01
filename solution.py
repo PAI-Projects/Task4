@@ -111,7 +111,8 @@ class MLPActorCritic(nn.Module):
         # `torch.no_grad` to ensure that it does not interfere with the gradient computation.
         with torch.no_grad():
             pi, logp_a = self.pi(state, act=torch.arange(0, 4))
-            action = torch.argmax(logp_a)
+            # action = torch.argmax(logp_a) # does not work well if we take the max since there is little exploration!!!
+            action = pi.sample()
 
             value = self.v(state)
 
