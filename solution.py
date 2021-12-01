@@ -219,7 +219,7 @@ class Agent:
         Use the data from the buffer to update the policy. Returns nothing.
         """
         # TODO2 - done: Implement this function.
-        # TODO8: Change the update rule to make use of the baseline instead of rewards-to-go.
+        # TODO8 - done: Change the update rule to make use of the baseline instead of rewards-to-go.
 
         obs = data['obs']
         act = data['act']
@@ -233,7 +233,8 @@ class Agent:
         # parameters is the policy gradient. Then call loss.backwards() and pi_optimizer.step()
         _, logp = self.ac.pi(obs, act=act)
 
-        loss = -(ret * logp).mean()
+        # loss = -(ret * logp).mean()
+        loss = -(phi * logp).mean()
 
         loss.backward()
         self.pi_optimizer.step()
