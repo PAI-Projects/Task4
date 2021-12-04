@@ -305,12 +305,14 @@ class Agent:
         state, ep_ret, ep_len = self.env.reset(), 0, 0
 
         # Main training loop: collect experience in env and update / log each epoch
+        total_steps = 0
         for epoch in range(epochs):
             ep_returns = []
             for t in range(steps_per_epoch):
                 a, v, logp = self.ac.step(torch.as_tensor(state, dtype=torch.float32))
 
                 next_state, r, terminal = self.env.transition(a)
+                total_steps += 1
                 ep_ret += r
                 ep_len += 1
 
@@ -337,7 +339,7 @@ class Agent:
             mean_return = np.mean(ep_returns) if len(ep_returns) > 0 else np.nan
             if len(ep_returns) == 0:
                 print(f"Epoch: {epoch + 1}/{epochs}, all episodes exceeded max_ep_len")
-            print(f"Epoch: {epoch + 1}/{epochs}, mean return {mean_return}")
+            print(f"Epoch: {epoch + 1}/{epochs}, mean return {mean_return}, env steps. {total_steps}")
 
             # This is the end of an epoch, so here is where we update the policy and value function
 
