@@ -203,12 +203,12 @@ class Agent:
     def __init__(self, env, ppo_loss=True):
         self.env = env
         self.ppo_loss = ppo_loss
-        self.hid = 64  # layer width of networks
-        self.l = 2  # layer number of networks
+        self.hid = 128  # layer width of networks
+        self.l = 3  # layer number of networks
         # initialises an actor critic
         self.ac = MLPActorCritic(hidden_sizes=[self.hid] * self.l)
 
-        self.clip_coeff = 0.2  # ppo clip coefficient
+        self.clip_coeff = 0.3  # ppo clip coefficient
 
         # Learning rates for policy and value function
         pi_lr = 3e-4 if self.ppo_loss else 3e-3
@@ -312,11 +312,11 @@ class Agent:
         # Training parameters
         # You may wish to change the following settings for the buffer and training
         # Number of training steps per epoch
-        steps_per_epoch = 3000
+        steps_per_epoch = 1250
         # Number of epochs to train for
-        epochs = 50
+        epochs = 120
         # The longest an episode can go on before cutting it off
-        max_ep_len = 300
+        max_ep_len = 250
         # Discount factor for weighting future rewards
         gamma = 0.99
         lam = 0.97
