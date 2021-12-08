@@ -200,15 +200,18 @@ class VPGBuffer:
 
 
 class Agent:
-    def __init__(self, env):
+    def __init__(self, env, ppo_loss=True):
         self.env = env
+        self.ppo_loss = ppo_loss
         self.hid = 64  # layer width of networks
         self.l = 2  # layer number of networks
         # initialises an actor critic
         self.ac = MLPActorCritic(hidden_sizes=[self.hid] * self.l)
 
+        self.clip_coeff = 0.2  # ppo clip coefficient
+
         # Learning rates for policy and value function
-        pi_lr = 3e-3
+        pi_lr = 3e-4 if self.ppo_loss else 3e-3
         vf_lr = 1e-3
 
         # we will use the Adam optimizer to update value function and policy
@@ -232,13 +235,36 @@ class Agent:
 
         # Hint: you need to compute a 'loss' such that its derivative with respect to the policy
         # parameters is the policy gradient. Then call loss.backwards() and pi_optimizer.step()
-        _, logp = self.ac.pi(obs, act=act)
 
-        # loss = -(ret * logp).mean()
-        loss = -(phi * logp).mean()
+        if self.ppo_loss:
+            # PPO loss (https://spinningup.openai.com/en/latest/algorithms/ppo.html)
+            for i in range(100):
+                _, logp = self.ac.pi(obs, act=act)
+                ratio = torch.exp(logp - data['logp'])  # note in the first iteration the ratio is 1!
+                loss = -torch.min(ratio * phi,
+                                  torch.clamp(ratio, 1 - self.clip_coeff, 1 + self.clip_coeff) * phi
+                                  ).mean()
 
-        loss.backward()
-        self.pi_optimizer.step()
+                loss.backward()
+                self.pi_optimizer.step()
+                self.pi_optimizer.zero_grad()
+
+                kl_div = (data['logp'] - logp).mean().item()
+
+                if kl_div > 0.01:  # early stopping
+                    # print("early stopping")
+                    break
+        else:
+            _, logp = self.ac.pi(obs, act=act)
+
+            # rewards to go loss
+            # loss = -(ret * logp).mean()
+
+            # advantage loss
+            loss = -(phi * logp).mean()
+
+            loss.backward()
+            self.pi_optimizer.step()
 
         return
 
