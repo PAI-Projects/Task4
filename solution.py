@@ -420,6 +420,7 @@ def main():
         # The environment will set terminal to True if an episode is done.
         terminal = False
         env.reset()
+        t = 0
         for t in range(episode_length):
             if i <= 10:
                 rec.capture_frame()
@@ -430,7 +431,7 @@ def main():
             if terminal:
                 break
         returns.append(cumulative_return)
-        print(f"Achieved {cumulative_return:.2f} return.")
+        print(f"Achieved {cumulative_return:.2f} return in {t} steps.")
         if i == 10:
             rec.close()
             print("Saved video of 10 episodes to 'policy.mp4'.")
